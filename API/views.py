@@ -45,7 +45,7 @@ class RegisterView(generics.CreateAPIView):
         token = default_token_generator.make_token(user)
 
         verification_link = (
-            f"http://127.0.0.1:8000/api/verify-email/"
+            f"{settings.SITE_URL}/api/verify-email/"
             f"?uid={uid}&token={token}"
         )
 
