@@ -1,0 +1,369 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf" content="{{ csrf_token }}">
+<title>ইউনিয়ন ভোট</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://unpkg.com/boxicons/css/boxicons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'media',
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Hind Siliguri', 'sans-serif'] },
+        colors: {
+          brand: { DEFAULT: '#006a4e', light: '#0a9a72', dark: '#044e39' },
+          accent: '#f42a41'
+        }
+      }
+    }
+  }
+</script>
+<style> body { font-family: 'Hind Siliguri', sans-serif; } </style>
+
+
+
+</head>
+
+<nav class="bg-white overflow-hidden">
+    <div class="whitespace-nowrap animate-[marquee_12s_linear_infinite] text-center font-semibold text-[#006a4e]">
+        <i class="bx bx-box" style="color:#7227f4;"></i> ভোটগ্রহণের সময়সূচি: সকাল ৮:০০টা থেকে সন্ধ্যা ৬:০০টা পর্যন্ত।
+    </div>
+</nav>
+<style>
+@keyframes marquee {
+    from {
+        transform: translateX(80%);
+    }
+    to {
+        transform: translateX(-80%);
+    }
+}
+</style>
+
+<body class="bg-cover bg-center" style="background-image:url('{% static 'image/colo_BD.jpg' %}');">
+   
+
+    
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-[#006a4e] to-[#0a9a72] text-white pt-4 pb-5 px-5 text-center relative shadow-md">
+    <div id="who" class="hidden absolute top-4 right-4 text-sm bg-white/20 backdrop-blur-md py-1.5 px-4 rounded-full items-center gap-2">
+      <span id="whoName"></span>
+      <button id="logoutBtn" class="bg-transparent border-0 text-white font-bold cursor-pointer underline hover:text-emerald-200">লগআউট</button>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <h1 class="text-2xl sm:text-4xl font-bold tracking-tight"><i class="bx bx-box" style="color:#facc15;"></i>ময়না ইউনিয়ন পরিষদ নির্বাচন</h1>
+      <p class="opacity-90 mt-1.5 text-xl sm:text-3xl">আপনার ভোট <i class="fa-solid fa-check-to-slot text-green-400 text-3xl"></i> আপনার অধিকার <i class="fa-solid fa-scale-balanced text-blue-700 text-3xl"></i></p>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-[1040px] w-full mx-auto px-4  mb-12 flex-grow">
+    
+    <!-- Tabs Navigation -->
+    <div class="flex flex-warp justify-center gap-1.5 bg-white dark:bg-[#16211c] p-1.5 rounded-2xl shadow-xl w-fit mx-auto mb-8 mt-2 border border-slate-200/60 dark:border-slate-800">
+      <button class="tabs-btn font-semibold text-sm px-5 py-2.5 rounded-xl cursor-pointer text-slate-500 dark:text-slate-400 transition-all" data-t="login">লগইন</button>
+      <button class="tabs-btn font-semibold text-sm px-5 py-2.5 rounded-xl cursor-pointer text-slate-500 dark:text-slate-400 transition-all" data-t="register">রেজিস্টার</button>
+      <button class="tabs-btn font-semibold text-sm px-5 py-2.5 rounded-xl cursor-pointer text-slate-500 dark:text-slate-400 transition-all disabled:opacity-40 disabled:cursor-not-allowed" data-t="vote" id="tabVote" disabled>ভোট দিন</button>
+      <button class="tabs-btn font-semibold text-sm px-5 py-2.5 rounded-xl cursor-pointer text-slate-500 dark:text-slate-400 transition-all" data-t="result">ফলাফল</button>
+    </div>
+
+    <!-- LOGIN -->
+    <section id="login" class="sec hidden">
+      <form id="loginForm" autocomplete="off" class="rounded-2xl shadow-xl p-6 sm:p-7 max-w-[420px] mx-auto border dark:border-slate-700">
+        <h2 class="text-lg md:text-xl font-bold mb-1 text-center dark:text-emerald-300">লগইন করুন</h2>
+        <p class="text-sm mb-5 text-center text-white drop-shadow-sm bg-black/5 px-2 py-1 rounded-full">ভোট দেওয়ার আগে আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
+        
+        <label for="lu" class="block font-semibold text-white text-sm mb-1.5">ইউজারনেম</label>
+        <input id="lu" required class="w-full text-base text-white px-3.5 py-3 rounded-xl border shadow-xl bg-transparent focus:outline-none focus:border-blue-600">
+        
+        <label for="lp" class="block font-semibold text-white text-sm mt-4 mb-1.5">পাসওয়ার্ড</label>
+        <input id="lp" type="password" required class="w-full text-base px-3.5 py-3 rounded-xl border border-shadow bg-transparent focus:outline-none focus:border-blue-600">
+        
+        <button class="mt-5 w-full font-bold text-base py-3.5 rounded-xl bg-[#006a4e] hover:bg-[#044e39] text-white cursor-pointer shadow-md transition-all disabled:opacity-60" id="loginBtn">লগইন করুন</button>
+        <div id="loginMsg"></div>
+        
+        <div class="mt-4 text-center text-sm text-white ">
+          অ্যাকাউন্ট নেই? <a data-t="register" class="text-green-400  font-semibold cursor-pointer underline">রেজিস্টার করুন</a>
+        </div>
+      </form>
+    </section>
+
+    <!-- REGISTER -->
+    <section id="register" class="sec hidden">
+      <form id="regForm" autocomplete="off" class=" rounded-2xl shadow-xl p-6 sm:p-7 max-w-[420px] mx-auto border border-2 border-slate-200/60 dark:border-slate-800">
+        <h2 class="text-xl text-blue-800 font-bold mb-1">নতুন অ্যাকাউন্ট</h2>
+        <p class=" text-blue-400 md:text-white text-sm mb-5">ভোট দেওয়ার জন্য একটি অ্যাকাউন্ট তৈরি করুন</p>
+        
+        <label for="ru" class="block text-white font-semibold text-sm mb-1.5">ইউজারনেম</label>
+        <input id="ru" required class="w-full text-base text-white px-3.5 py-3 rounded-xl border shadow-xl bg-transparent focus:outline-none focus:border-blue-600">
+        
+        <label for="re" class="block text-white font-semibold text-sm mt-4 mb-1.5">ইমেইল</label>
+        <input id="re" type="email" placeholder="example@gmail.com" class="w-full text-base text-white px-3.5 py-3 rounded-xl border shadow-xl bg-transparent focus:outline-none focus:border-blue-600">
+        
+        <label for="rp" class="block text-white font-semibold text-sm mt-4 mb-1.5">পাসওয়ার্ড</label>
+        <input id="rp" type="password" required minlength="6" class="w-full text-base text-white px-3.5 py-3 rounded-xl border shadow-xl bg-transparent focus:outline-none focus:border-blue-600">
+        
+        <button class="mt-5 w-full font-bold text-base py-3.5 rounded-xl bg-[#006a4e] hover:bg-[#044e39] text-white cursor-pointer shadow-md transition-all disabled:opacity-60" id="regBtn">রেজিস্টার করুন</button>
+        <div id="regMsg"></div>
+        
+        <div class="mt-4 text-center text-sm text-white">
+          আগে থেকে অ্যাকাউন্ট আছে? <a data-t="login" class="text-green-400 font-semibold cursor-pointer underline">লগইন করুন</a>
+        </div>
+      </form>
+    </section>
+
+    <!-- VOTE -->
+    <section id="vote" class="sec hidden">
+      <h2 id="voteTitle" class="text-xl text-white font-bold mb-1">প্রার্থী নির্বাচন করুন</h2>
+      <p id="voteSubtitle" class="text-gray-300  text-sm mb-5">আপনার পছন্দের প্রার্থীকে কার্ডে ক্লিক করে সিলেক্ট করুন</p>
+      
+      <div id="cards" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-5">
+        <p class="col-span-full text-center text-slate-500 py-8">লোড হচ্ছে...</p>
+      </div>
+      
+      <form id="voteForm" autocomplete="off" class="bg-white dark:bg-[#16211c] rounded-2xl shadow-xl p-6 sm:p-7 max-w-[520px] mx-auto border border-slate-200/60 dark:border-slate-800">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label for="name" class="block text-white font-semibold text-sm mb-1.5">আপনার NID নাম</label>
+            <input id="name" maxlength="50" required placeholder="পুরো নাম" class="w-full text-base px-3.5 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50  focus:outline-none focus:border-[#0a9a72] transition-all">
+          </div>
+          <div>
+            <label for="village" class="block text-white font-semibold text-sm mb-1.5">গ্রাম/মহল্লা</label>
+            <select id="village" required class="w-full text-base px-3.5 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50  focus:outline-none focus:border-[#0a9a72] transition-all">
+              <option value="">গ্রাম/মহল্লা নির্বাচন করুন</option>
+              <option value="bilsorail">বিলসরাইল</option>
+              <option value="kandakul">কান্দাকুল</option>
+              <option value="icakhali">ইচাখালি</option>
+            </select>
+          </div>
+          <div>
+            <label for="dateOfBirth" class="block text-white font-semibold text-sm mb-1.5">NID জন্ম তারিখ</label>
+            <input id="dateOfBirth" type="date" required class="w-full text-base px-3.5 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50  focus:outline-none focus:border-[#0a9a72] transition-all">
+          </div>
+          <div>
+            <label for="nid" class="block text-white font-semibold text-sm mb-1.5">NID নম্বর</label>
+            <input id="nid" inputmode="numeric" maxlength="17" required placeholder="ভোটার NID" class="w-full text-base px-3.5 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50  focus:outline-none focus:border-[#0a9a72] transition-all">
+          </div>
+        </div>
+        <p class="text-red-500 text-center m-2 text-sm"><i class="bx bx-lock"></i>আপনার সকল তথ্য এনক্রিপ্টেড ও সুরক্ষিত।</p>
+        <button class="w-full font-bold text-base py-3 rounded-xl bg-[#006a4e] hover:bg-[#044e39] text-white cursor-pointer shadow-md transition-all disabled:opacity-60" id="go">ভোট নিশ্চিত করুন</button>
+        <div id="voteMsg"></div>
+      </form>
+      
+      <div id="doneBox" class="hidden rounded-2xl shadow-xl p-8 text-center max-w-[420px] mx-auto border">
+        <div class="text-5xl mb-2"><i class="bx bx-check border-2 border-[#1bf549] bg-white rounded-full p-1" style="color:#1bf549;"></i></div>
+        <h2 class="text-xl font-bold text-blue-600">ধন্যবাদ!</h2>
+        <p id="doneTxt" class="text-white text-md my-3"></p>
+        <button class="mt-2 w-full font-bold text-base py-3 rounded-xl bg-[#006a4e] hover:bg-[#044e39] text-white cursor-pointer shadow-md" onclick="tab('result')">ফলাফল দেখুন</button>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="result" class="sec hidden">
+      <div class="bg-white dark:bg-[#16211c] rounded-2xl shadow-xl p-6 sm:p-7 border border-slate-200/60 dark:border-slate-800">
+        <h2 class="text-xl text-white font-bold mb-1 flex items-center gap-2">
+             <span class="relative flex h-6 w-6">
+                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                   <span class="relative inline-flex rounded-full h-6 w-6 bg-red-500"></span>
+             </span>
+                   লাইভ ফলাফল
+        </h2>
+        <div class="text-sm mb-5 text-green-400" id="tot"></div>
+        <div id="bars" class="space-y-4 text-white"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center text-slate-500 text-white text-xs pb-8">
+    ইউনিয়ন ভোট · প্রতি ১০ সেকেন্ডে ফলাফল আপডেট হয়
+  </footer>
+   <p class="text-sm px-3 py-3 text-white">Created by ALOK KUMAR PAUL</p>
+
+<script>
+const $=s=>document.querySelector(s);
+const bn=n=>String(n).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[d]);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const csrf=$('meta[name=csrf]').content;
+let cands=[],sel=null;
+
+function getToken(){return localStorage.getItem('access');}
+function setTokens(a,r){localStorage.setItem('access',a);if(r)localStorage.setItem('refresh',r);}
+function clearTokens(){localStorage.removeItem('access');localStorage.removeItem('refresh');localStorage.removeItem('username');}
+function authHeaders(){const t=getToken();return t?{'Authorization':'Bearer '+t}:{};}
+
+function refreshLoginUI(){
+  const t=getToken(), u=localStorage.getItem('username');
+  $('#tabVote').disabled=!t;
+  if(t){
+    $('#who').style.display='inline-flex';
+    $('#whoName').textContent=u?('স্বাগতম, '+u):'লগইন করা আছে';
+  }else{
+    $('#who').style.display='none';
+  }
+}
+
+function tab(t){
+  if(t==='vote' && !getToken()){t='login';}
+  document.querySelectorAll('.tabs-btn').forEach(b=>{
+    const match = b.dataset.t === t;
+    b.classList.toggle('bg-[#006a4e]', match);
+    b.classList.toggle('text-white', match);
+    b.classList.toggle('text-slate-500', !match);
+    b.classList.toggle('dark:text-slate-400', !match);
+  });
+  document.querySelectorAll('.sec').forEach(s=>{
+    if(s.id === t) {
+      s.classList.remove('hidden');
+      s.classList.add('block');
+    } else {
+      s.classList.add('hidden');
+      s.classList.remove('block');
+    }
+  });
+}
+document.querySelectorAll('[data-t]').forEach(el=>el.addEventListener('click',()=>tab(el.dataset.t)));
+
+$('#logoutBtn').onclick=()=>{clearTokens();refreshLoginUI();tab('login');};
+
+const av = c => c.symbol ? 
+  `<img class="w-24 h-24 rounded-full object-cover border-[3px] border-slate-200 dark:border-slate-700 mx-auto mb-2.5 shadow-sm" src="${esc(c.symbol)}" alt="">` : 
+  `<div class="w-24 h-24 rounded-full border-[3px] border-slate-200 dark:border-slate-700 mx-auto mb-2.5 flex items-center justify-center bg-slate-200 dark:bg-slate-800 font-bold text-3xl text-[#006a4e]">${esc(c.name[0]||'?')}</div>`;
+
+function renderCandidates(){
+  if(!cands.length){$('#cards').innerHTML='<p class="col-span-full text-center text-slate-500 py-8">এখনো কোনো প্রার্থী যোগ করা হয়নি।</p>';return;}
+  $('#cards').innerHTML=cands.map(c=>`
+    <div class="card bg-white dark:bg-[#16211c] border-2 ${c.id===sel?'border-[#0a9a72] bg-emerald-50/20 dark:bg-emerald-950/20':'border-transparent'} rounded-[18px] p-5 text-center cursor-pointer shadow-lg relative  hover:"-translate-y-1" data-id="${c.id}">
+      ${c.id===sel?'<span class="absolute top-2.5 right-2.5 w-[26px] h-[26px] rounded-full bg-[#0a9a72] text-white font-bold text-xs leading-[26px] text-center shadow">✓</span>':''}
+      ${av(c)}
+      <h3 class="text-lg text-white font-bold">${esc(c.name)}</h3>
+      <small class="text-white block mt-0.5">${esc(c.party)}</small>
+      ${c.image?`<img class="h-10 w-10 object-contain mx-auto mt-2.5 rounded-lg" src="${esc(c.image)}" alt="প্রতীক">`:''}
+    </div>`).join('');
+  document.querySelectorAll('.card').forEach(el=>el.onclick=()=>{sel=+el.dataset.id;renderCandidates();});
+}
+
+const avRes = c => c.symbol ? 
+  `<img class="w-[52px] h-[52px] rounded-full object-cover border-2 border-slate-200 dark:border-slate-700 shrink-0" src="${esc(c.symbol)}" alt="">` : 
+  `<div class="w-[52px] h-[52px] rounded-full border-2 border-slate-200 dark:border-slate-700 shrink-0 flex items-center justify-center bg-slate-200 dark:bg-slate-800 font-bold text-xl text-[#006a4e]">${esc(c.name[0]||'?')}</div>`;
+
+function renderResult(){
+  const total=cands.reduce((a,c)=>a+c.vote_count,0);
+  const top=Math.max(0,...cands.map(c=>c.vote_count));
+  $('#tot').textContent=`মোট ভোট: ${bn(total)}`;
+  if(!cands.length){$('#bars').innerHTML='<p class="text-center text-slate-500 py-8">এখনো কোনো প্রার্থী নেই।</p>';return;}
+  $('#bars').innerHTML=[...cands].sort((a,b)=>b.vote_count-a.vote_count).map(c=>{
+    const p=total?Math.round(c.vote_count*1000/total)/10:0;
+    const isLead = total && c.vote_count === top;
+    return `<div class="flex items-center gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 last:border-0 last:pb-0">
+      ${avRes(c)}
+      <div class="flex-grow min-w-0">
+        <div class="flex justify-between items-center">
+          <div class="truncate"><b class="text-base">${esc(c.name)}</b> <small class="text-slate-500 dark:text-[#8fa399] ml-1">${esc(c.party)}</small></div>
+          <div class="text-right shrink-0 ml-2"><b class="text-base">${bn(c.vote_count)}</b><small class="block text-slate-500 dark:text-[#8fa399]">${bn(p)}%</small></div>
+        </div>
+        <div class="h-3 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden mt-1.5">
+          <div class="h-full rounded-full transition-all duration-800 ${isLead?'bg-gradient-to-r from-[#f42a41] to-[#ff7a5c]':'bg-gradient-to-r from-[#006a4e] to-[#0a9a72]'}" style="width:${p}%"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function loadCandidates(){
+  try{
+    const r=await fetch('/api/candidate/');
+    cands=await r.json();
+    renderCandidates();
+    renderResult();
+  }catch(e){$('#cards').innerHTML='<p class="col-span-full text-center text-slate-500 py-8">ডাটা লোড করা যায়নি।</p>';}
+}
+
+function showMsg(id,text,ok){
+  $(id).innerHTML=text?`<div class="mt-3 p-2.5 rounded-xl text-center text-sm ${ok?' text-green-400':'text-red-500'}">${esc(text)}</div>`:'';
+}
+
+// ---- Register ----
+$('#regForm').onsubmit=async e=>{
+  e.preventDefault();showMsg('#regMsg','');
+  const btn=$('#regBtn');btn.disabled=true;
+  try{
+    const r=await fetch('/api/register/',{method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':csrf},
+      body:JSON.stringify({username:$('#ru').value.trim(),email:$('#re').value.trim(),password:$('#rp').value})});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok){
+      showMsg('#regMsg','অ্যাকাউন্ট তৈরি হয়েছে! এখন লগইন করুন।',true);
+      $('#lu').value=$('#ru').value.trim();
+      setTimeout(()=>tab('login'),900);
+    }else{
+      const first=[].concat(...Object.values(d))[0];
+      showMsg('#regMsg',typeof first==='string'?first:'রেজিস্ট্রেশন ব্যর্থ হয়েছে।');
+    }
+  }catch(err){showMsg('#regMsg','সার্ভারের সাথে যোগাযোগ করা যাচ্ছে না।');}
+  btn.disabled=false;
+};
+
+// ---- Login ----
+$('#loginForm').onsubmit=async e=>{
+  e.preventDefault();showMsg('#loginMsg','');
+  const btn=$('#loginBtn');btn.disabled=true;
+  try{
+    const r=await fetch('/api/token/',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({username:$('#lu').value.trim(),password:$('#lp').value})});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok){
+      setTokens(d.access,d.refresh);
+      localStorage.setItem('username',$('#lu').value.trim());
+      refreshLoginUI();
+      showMsg('#loginMsg','লগইন সফল হয়েছে!',true);
+      setTimeout(()=>tab('vote'),500);
+    }else{
+      showMsg('#loginMsg','দুঃখিত! আপনার অ্যাকাউন্ট যাচাই করতে অনুগ্রহ করে আপনার ইমেইল চেক করুন!');
+    }
+  }catch(err){showMsg('#loginMsg','সার্ভারের সাথে যোগাযোগ করা যাচ্ছে না।');}
+  btn.disabled=false;
+};
+
+// ---- Vote ----
+$('#voteForm').onsubmit=async e=>{
+  e.preventDefault();showMsg('#voteMsg','');
+  if(!getToken())return tab('login');
+  if(!sel)return showMsg('#voteMsg','আগে একজন প্রার্থী বেছে নিন।');
+  const btn=$('#go');btn.disabled=true;
+  try{
+    const r=await fetch('/api/vote/',{method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':csrf,...authHeaders()},
+      body:JSON.stringify({candidate:sel,name:$('#name').value.trim(),n_id:$('#nid').value.trim(),village:$('#village').value,date_of_birth:$('#dateOfBirth').value})});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok){
+      const c=cands.find(x=>x.id===sel);
+      $('#doneTxt').textContent=`আপনি ${c?c.name:''}-কে ভোট দিয়েছেন।`;
+      $('#voteForm').classList.add('hidden');$('#doneBox').classList.remove('hidden');$('#voteTitle').classList.add('hidden');$('#voteSubtitle').classList.add('hidden');$('#cards').classList.add('hidden');
+      loadCandidates();
+    }else if(r.status===401){
+      showMsg('#voteMsg','সেশনের মেয়াদ শেষ, আবার লগইন করুন।');
+      clearTokens();refreshLoginUI();setTimeout(()=>tab('login'),800);
+    }else{
+      const first=[].concat(...Object.values(d))[0];
+      showMsg('#voteMsg',typeof first==='string'?first:'ভোট দেওয়া যায়নি, আবার চেষ্টা করুন।');
+    }
+  }catch(err){showMsg('#voteMsg','সার্ভারের সাথে যোগাযোগ করা যাচ্ছে না।');}
+  btn.disabled=false;
+};
+
+refreshLoginUI();
+loadCandidates();
+tab('login'); 
+setInterval(loadCandidates,10000);
+</script>
+</body>
+</html>
