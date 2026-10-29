@@ -29,6 +29,7 @@ SECRET_KEY = 'django-insecure-jphq=m-o10j*7(7pvk3ykvbglsg%9jnmt8#7i$!qn#6@^olr@+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
+
 ALLOWED_HOSTS = [ "localhost","127.0.0.1","unionvotting-system.onrender.com",]
 
 
